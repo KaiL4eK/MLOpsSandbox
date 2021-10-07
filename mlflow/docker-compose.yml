@@ -16,14 +16,15 @@ services:
     <<: *restart-policy
     <<: *logging-policy
     environment:
-      - MINIO_ACCESS_KEY
-      - MINIO_SECRET_KEY
+      - MINIO_ROOT_USER
+      - MINIO_ROOT_PASSWORD
     ports:
-      - 9000:9000
+      - ${MINIO_API_EXT_PORT}:9000
+      - ${MINIO_CONSOLE_EXT_PORT}:9001
     volumes:
-      - ./minio/data:/data
-      - ./minio/config:/root/.minio
-    command: server /data
+      - minio_data:/data
+      # - ./minio/config:/root/.minio
+    command: server /data --console-address :9001
 
   postgresql:
     image: postgres:14.0-alpine
@@ -33,6 +34,7 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
+      - PGDATA=/var/lib/pgsql
     volumes:
       - db:/var/lib/pgsql
 
@@ -41,13 +43,13 @@ services:
     <<: *restart-policy
     <<: *logging-policy
     environment:
-      - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY}
-      - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_KEY}
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
       - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
     ports:
-      - 5000:5000
+      - ${MLFLOW_EXT_PORT}:5000
     volumes:
-      - mlflow/data:/mlflow
+      - mlflow:/mlflow
     depends_on:
       - minio
       - postgresql
@@ -58,15 +60,18 @@ services:
         --host 0.0.0.0
 
 volumes:
+  minio_data:
+    driver_opts:
+      type: none
+      device: ./volumes/minio/data
+      o: bind
   db:
     driver_opts:
       type: none
-      device: ${PWD}/db
+      device: ./volumes/db
       o: bind
   mlflow:
     driver_opts:
       type: none
-      device: ${PWD}/mlflow
+      device: ./volumes/mlflow
       o: bind
-
-# Don`t forget to create mlflow bucket!

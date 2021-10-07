@@ -14,8 +14,7 @@ done
 
 echo "Clean containers: $CLEAN_CONTAINERS"
 
-cd $CVAT_DIRECTORY && \
-    docker-compose stop
+docker-compose stop
 
 if $CLEAN_CONTAINERS ;then
     docker-compose down --volumes
