@@ -18,3 +18,4 @@ Docker, docker-compose installation:
 ```bash
 docker exec -it cvat bash -ic 'python3 ~/manage.py createsuperuser'
 ```
+- Setup users on [admin page](http://localhost:8080/admin)
