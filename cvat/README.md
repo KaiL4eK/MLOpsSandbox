@@ -9,7 +9,7 @@ Docker, docker-compose installation:
 
 - Start daemonized container
 ```bash
-./scripts/start_cvat.sh -d
+./scripts/start.sh -d
 ```
 
 ## Post-installation

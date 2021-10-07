@@ -13,8 +13,8 @@ do
 done
 
 echo "Docker options: $DOCKER_OPTS"
-echo "CVAT compose project name: $COMPOSE_PROJECT_NAME"
-echo "CLone directory: $CVAT_DIRECTORY"
+echo "Compose project name: $COMPOSE_PROJECT_NAME"
+echo "Clone directory: $CVAT_DIRECTORY"
 
 ## Get cvat from repository
 [[ -d "cvat" ]] || git clone -b v1.6.0 https://github.com/openvinotoolkit/cvat.git $DIRECTORY && \
