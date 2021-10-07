@@ -17,7 +17,7 @@ echo "Compose project name: $COMPOSE_PROJECT_NAME"
 echo "Clone directory: $CVAT_DIRECTORY"
 
 ## Get cvat from repository
-[[ -d "cvat" ]] || git clone -b v1.6.0 https://github.com/openvinotoolkit/cvat.git $DIRECTORY && \
+[[ -d $CVAT_DIRECTORY ]] || git clone -b v1.6.0 https://github.com/openvinotoolkit/cvat.git $DIRECTORY && \
 
 cp src/docker-compose.yml cvat/
 

@@ -2,8 +2,11 @@
 
 ## Pre-installation steps
 
-Docker, docker-compose installation:
-- https://openvinotoolkit.github.io/cvat/docs/administration/basics/installation/
+- Docker, docker-compose installation: https://openvinotoolkit.github.io/cvat/docs/administration/basics/installation/
+<!-- - Build (pull) all requured images
+```bash
+./scripts/build.sh
+``` -->
 
 ## Installation
 
