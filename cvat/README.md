@@ -1,5 +1,10 @@
 # CVAT start-up scripts
 
+## Sources
+
+- [GitHub](https://github.com/openvinotoolkit/cvat)
+- [Demo service](https://cvat.org/)
+
 ## Pre-installation steps
 
 - Docker, docker-compose installation: https://openvinotoolkit.github.io/cvat/docs/administration/basics/installation/
