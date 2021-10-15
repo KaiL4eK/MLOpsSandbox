@@ -63,15 +63,15 @@ volumes:
   minio_data:
     driver_opts:
       type: none
-      device: ./volumes/minio/data
+      device: $PWD/volumes/minio/data
       o: bind
   db:
     driver_opts:
       type: none
-      device: ./volumes/db
+      device: $PWD/volumes/db
       o: bind
   mlflow:
     driver_opts:
       type: none
-      device: ./volumes/mlflow
+      device: $PWD/volumes/mlflow
       o: bind
