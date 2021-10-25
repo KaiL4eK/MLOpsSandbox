@@ -18,3 +18,25 @@
 ```
 
 ## Post-installation
+
+- Activate local virtualenv
+
+```bash
+. ./scripts/activate_local_venv.sh
+```
+
+- Initialize clearml client
+
+```bash
+# This creates file ~/clearml.conf
+# Ref: https://clear.ml/docs/latest/docs/configs/clearml_conf
+clearml-init
+```
+
+## Sample execution
+
+- Execute script to log some metrics to server
+
+```bash
+python scripts/clearml_sample.py
+```

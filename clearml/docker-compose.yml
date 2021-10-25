@@ -1,5 +1,18 @@
 # From https://github.com/allegroai/clearml-server/blob/1.1.1/docker/docker-compose.yml
 version: "3.6"
+
+volumes:
+  elastic_logs:
+    driver_opts:
+      type: none
+      device: $PWD/clearml/elastic/logs
+      o: bind
+  elastic_data:
+    driver_opts:
+      type: none
+      device: $PWD/clearml/elastic/data
+      o: bind
+
 services:
 
   apiserver:
@@ -64,8 +77,8 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
     restart: unless-stopped
     volumes:
-      - ./clearml/elastic/data:/usr/share/elasticsearch/data
-      - ./clearml/elastic/logs:/usr/share/elasticsearch/logs
+      - elastic_data:/usr/share/elasticsearch/data
+      - elastic_logs:/usr/share/elasticsearch/logs
 
   fileserver:
     networks:
@@ -134,7 +147,7 @@ services:
       CLEARML_API_SECRET_KEY: ${CLEARML_API_SECRET_KEY:-}
       CLEARML_AGENT_GIT_USER: ${CLEARML_AGENT_GIT_USER}
       CLEARML_AGENT_GIT_PASS: ${CLEARML_AGENT_GIT_PASS}
-      CLEARML_AGENT_UPDATE_VERSION: ${CLEARML_AGENT_UPDATE_VERSION:-">=0.17.0"}
+      CLEARML_AGENT_UPDATE_VERSION: ${CLEARML_AGENT_UPDATE_VERSION:->=0.17.0}
       CLEARML_AGENT_DEFAULT_BASE_DOCKER: "ubuntu:18.04"
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
