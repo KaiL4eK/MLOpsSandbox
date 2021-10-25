@@ -1,11 +1,9 @@
-# MLFLow start-up scripts
+# ClearML start-up scripts
 
 ## References
 
-- [GitHub](https://github.com/mlflow/mlflow)
-- [PyPi](https://pypi.org/project/mlflow/)
-- [Docs](https://mlflow.org/docs/latest/index.html)
-- [Official Website](https://mlflow.org/)
+- [GitHub](https://github.com/allegroai/clearml-server)
+- [Official documentation](https://clear.ml/docs/latest/docs/deploying_clearml/clearml_server/)
 
 ## Pre-installation steps
 
