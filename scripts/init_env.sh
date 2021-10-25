@@ -6,6 +6,7 @@ export INSTALL_DIR=$PWD/dist
 
 export PATH=$INSTALL_DIR/bin:/usr/local/cuda/bin:$PATH
 export CMAKE_PREFIX_PATH=$INSTALL_DIR/lib/cmake:$CMAKE_INSTALL_PREFIX
+export LD_LIBRARY_PATH=$INSTALL_DIR/lib:$LD_LIBRARY_PATH
 
 # source $PWD/dist/bin/setup_vars_opencv4.sh
 
