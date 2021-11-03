@@ -15,5 +15,7 @@ done
 echo "Docker options: $DOCKER_OPTS"
 echo "Compose project name: $COMPOSE_PROJECT_NAME"
 
+mkdir -p clearml/elastic/{data,logs}
+
 docker-compose stop && \
 docker-compose up $DOCKER_OPTS
