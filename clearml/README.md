@@ -14,7 +14,7 @@
 - Start daemonized container
 
 ```bash
-./scripts/start.sh -d
+./scripts/restart.sh -d
 ```
 
 ## Post-installation
