@@ -1,0 +1,28 @@
+version: '3'
+services:
+    netdata:
+        container_name: netdata
+        image: d34dc3n73r/netdata-glibc
+        ports:
+            - 19999:19999
+        restart: unless-stopped
+        environment:
+            - NVIDIA_VISIBLE_DEVICES=all
+            - DOCKER_HOST=proxy:2375
+            - DO_NOT_TRACK=
+        cap_add:
+            - SYS_PTRACE
+        security_opt:
+            - apparmor:unconfined
+        volumes:
+            - /proc:/host/proc:ro
+            - /sys:/host/sys:ro
+           # - ./netdata.conf:/etc/netdata/python.d.conf
+    proxy:
+       restart: unless-stopped
+       image: tecnativa/docker-socket-proxy
+       volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+       environment:
+            - CONTAINERS=1
+
