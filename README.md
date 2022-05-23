@@ -14,6 +14,12 @@
   - OpenCV
 
     Build OpenCV locally [with GPU](scripts/build_opencv_gpu.sh) or [CPU only](build_opencv_cpu.sh)
+    
+    - Get OpenCV build info:
+    ```python
+    python3 -c "import cv2; print(cv2.getBuildInformation())"
+    ```
+    
   - [CUDA compute capability detection scripts](cuda_get_compute_arch.sh)
 
     Find out your CUDA compute capability version for compilation
