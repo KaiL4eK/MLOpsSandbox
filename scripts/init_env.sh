@@ -5,8 +5,12 @@
 export INSTALL_DIR=$PWD/dist
 
 export PATH=$INSTALL_DIR/bin:/usr/local/cuda/bin:$PATH
-export CMAKE_PREFIX_PATH=$INSTALL_DIR/lib/cmake:$CMAKE_INSTALL_PREFIX
+export CMAKE_PREFIX_PATH=$INSTALL_DIR/lib/cmake:$CMAKE_PREFIX_PATH
+export CMAKE_PREFIX_PATH=$INSTALL_DIR/share/cmake:$CMAKE_PREFIX_PATH
 export LD_LIBRARY_PATH=$INSTALL_DIR/lib:$LD_LIBRARY_PATH
+
+# export PYTHONPATH=$INSTALL_DIR/lib/python3.8/site-packages:$PYTHONPATH
+# export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/targets/x86_64-linux/lib
 
 # source $PWD/dist/bin/setup_vars_opencv4.sh
 
