@@ -1,0 +1,49 @@
+version: "3.8"
+
+x-restart-policy: &restart-policy unless-stopped
+x-logging-policy:
+  &logging-policy
+  options:
+    max-file: "5"
+    max-size: "20m"
+
+# services
+services:
+  guacd:
+    image: guacamole/guacd:${GUACAMOLE_VERSION}
+    restart: *restart-policy
+    logging: *logging-policy
+    volumes:
+      - ./${COMPOSE_ROOT_DIR}/drive:/drive:rw
+      - ./${COMPOSE_ROOT_DIR}/record:/record:rw
+
+  postgres:
+    image: postgres:13.4-buster
+    restart: *restart-policy
+    logging: *logging-policy
+    environment:
+      PGDATA: /var/lib/postgresql/data/guacamole
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+    volumes:
+      - ./${COMPOSE_ROOT_DIR}/db/init:/docker-entrypoint-initdb.d:z
+      - ./${COMPOSE_ROOT_DIR}/db/data:/var/lib/postgresql/data:Z
+
+  guacamole:
+    image: guacamole/guacamole:${GUACAMOLE_VERSION}
+    restart: *restart-policy
+    logging: *logging-policy
+    depends_on:
+      - guacd
+      - postgres
+    environment:
+      GUACD_HOSTNAME: guacd
+      POSTGRES_HOSTNAME: postgres
+      POSTGRES_DATABASE: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+    links:
+      - guacd
+    ports:
+      - ${GUACAMOLE_PORT}:8080

@@ -4,6 +4,8 @@
 
 - [CVAT](cvat) - Data labeling system with roles (management) and auto/semiauto-labeling
 - [MLFLow](mlflow) - Experiment tracking (logging) system with model registry support
+- [ClearML](clearml) - Experiment tracking (logging) system with model registry support
+- [Apache guacamole](guacamole) - Web SSH/RDP client
 - [scripts](scripts) - directory with scripts for libraries compilation
 
     ```bash
