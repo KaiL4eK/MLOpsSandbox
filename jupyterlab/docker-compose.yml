@@ -3,16 +3,19 @@ version: "3.6"
 services:
   jupyterlab:
     # image: jupyter/datascience-notebook:lab-3.4.7
-    image: cschranz/gpu-jupyter:v1.4_cuda-11.6_ubuntu-20.04_slim
+    build: .
+    # image: cschranz/gpu-jupyter:v1.4_cuda-11.6_ubuntu-20.04_slim
     environment:
       - JUPYTER_ENABLE_LAB=yes
       - GRANT_SUDO=yes
+      - JUPYTER_TOKEN=${TOKEN}
     # build: ./jupyterlab
     ports:
       - "8888:8888"
     volumes:
       - ./${COMPOSE_ROOT_DIR}/data:/home/jovyan
     # entrypoint: sh -c 'jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --notebook-dir=/opt/app/data --allow-root'
+    shm_size: '2gb'
     deploy:
       resources:
         reservations:

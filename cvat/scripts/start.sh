@@ -4,6 +4,11 @@ set -o allexport; source .env; set +o allexport
 
 DOCKER_OPTS=
 
+if [ -z $CVAT_HOST ]; then
+    echo "CVAT_HOST should be set with your IP"
+    exit 1
+fi
+
 while getopts d flag
 do
     case "${flag}" in
@@ -16,20 +21,14 @@ echo "Docker options: $DOCKER_OPTS"
 echo "Compose project name: $COMPOSE_PROJECT_NAME"
 echo "Clone directory: $CVAT_DIRECTORY"
 
-## Get cvat from repository
-[[ -d $CVAT_DIRECTORY ]] || git clone -b v1.6.0 https://github.com/openvinotoolkit/cvat.git $DIRECTORY && \
+[[ -d $CVAT_DIRECTORY ]] \
+    || git clone -b $CVAT_VERSION https://github.com/openvinotoolkit/cvat.git $CVAT_DIRECTORY
 
-cp src/docker-compose.yml cvat/
+#  https://opencv.github.io/cvat/v2.2.0/docs/administration/basics/installation/
 
-mkdir -p cvat/data/cvat_{data,keys,logs,models} && \
-mkdir -p cvat/cvat_shared && \
-cd $CVAT_DIRECTORY && \
-    docker-compose stop && \
-    docker-compose up $DOCKER_OPTS
-
-## Change CVAT_HOST to your IP
-
-## Change volumes settings
+cd $CVAT_DIRECTORY \
+    && docker-compose stop \
+    && docker-compose up $DOCKER_OPTS
 
 ## Create user "user" with password "1":
-# docker exec -it cvat bash -ic 'python3 ~/manage.py createsuperuser'
+# docker exec -it cvat_server bash -ic 'python3 ~/manage.py createsuperuser'

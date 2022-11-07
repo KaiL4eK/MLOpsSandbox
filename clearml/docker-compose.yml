@@ -41,6 +41,7 @@ services:
       CLEARML__apiserver__pre_populate__enabled: "true"
       CLEARML__apiserver__pre_populate__zip_files: "/opt/clearml/db-pre-populate"
       CLEARML__apiserver__pre_populate__artifacts_path: "/mnt/fileserver"
+      CLEARML__services__async_urls_delete__enabled: "true"
     ports:
     - "8008:8008"
     networks:
@@ -52,7 +53,7 @@ services:
       - backend
     container_name: clearml-elastic
     environment:
-      ES_JAVA_OPTS: -Xms2g -Xmx2g
+      ES_JAVA_OPTS: -Xms2g -Xmx2g -Dlog4j2.formatMsgNoLookups=true
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
       bootstrap.memory_lock: "true"
       cluster.name: clearml
@@ -131,41 +132,72 @@ services:
       - backend
       - frontend
 
-  # agent-services:
-  #   networks:
-  #     - backend
-  #   container_name: clearml-agent-services
-  #   # TODO - check if can be changed to certain version
-  #   image: allegroai/clearml-agent-services:latest
-  #   restart: unless-stopped
-  #   privileged: true
-  #   environment:
-  #     CLEARML_HOST_IP: ${CLEARML_HOST_IP}
-  #     CLEARML_WEB_HOST: ${CLEARML_WEB_HOST:-}
-  #     CLEARML_API_HOST: http://apiserver:8008
-  #     CLEARML_FILES_HOST: ${CLEARML_FILES_HOST:-}
-  #     CLEARML_API_ACCESS_KEY: ${CLEARML_API_ACCESS_KEY:-}
-  #     CLEARML_API_SECRET_KEY: ${CLEARML_API_SECRET_KEY:-}
-  #     CLEARML_AGENT_GIT_USER: ${CLEARML_AGENT_GIT_USER}
-  #     CLEARML_AGENT_GIT_PASS: ${CLEARML_AGENT_GIT_PASS}
-  #     CLEARML_AGENT_UPDATE_VERSION: ${CLEARML_AGENT_UPDATE_VERSION:->=0.17.0}
-  #     CLEARML_AGENT_DEFAULT_BASE_DOCKER: "ubuntu:18.04"
-  #     AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
-  #     AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
-  #     AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
-  #     AZURE_STORAGE_ACCOUNT: ${AZURE_STORAGE_ACCOUNT:-}
-  #     AZURE_STORAGE_KEY: ${AZURE_STORAGE_KEY:-}
-  #     GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
-  #     CLEARML_WORKER_ID: "clearml-services"
-  #     CLEARML_AGENT_DOCKER_HOST_MOUNT: "/opt/clearml/agent:/root/.clearml"
-  #   volumes:
-  #     # DiD
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #     - ./clearml/agent:/root/.clearml
-  #   depends_on:
-  #     - apiserver
-  #   entrypoint: >
-  #     bash -c "curl --retry 10 --retry-delay 10 --retry-connrefused 'http://apiserver:8008/debug.ping' && /usr/agent/entrypoint.sh"
+  async_delete:
+    depends_on:
+      - apiserver
+      - redis
+      - mongo
+      - elasticsearch
+      - fileserver
+    container_name: async_delete
+    image: allegroai/clearml:${CLEARML_DOCKER_VERSION}
+    networks:
+      - backend
+    restart: unless-stopped
+    environment:
+      CLEARML_ELASTIC_SERVICE_HOST: elasticsearch
+      CLEARML_ELASTIC_SERVICE_PORT: 9200
+      CLEARML_ELASTIC_SERVICE_PASSWORD: ${ELASTIC_PASSWORD}
+      CLEARML_MONGODB_SERVICE_HOST: mongo
+      CLEARML_MONGODB_SERVICE_PORT: 27017
+      CLEARML_REDIS_SERVICE_HOST: redis
+      CLEARML_REDIS_SERVICE_PORT: 6379
+      PYTHONPATH: /opt/clearml/apiserver
+    entrypoint:
+      - python3
+      - -m
+      - jobs.async_urls_delete
+      - --fileserver-host
+      - http://fileserver:8081
+    volumes:
+      - ./clearml/logs:/var/log/clearml
+
+  agent-services:
+    networks:
+      - backend
+    container_name: clearml-agent-services
+    # TODO - check if can be changed to certain version
+    image: allegroai/clearml-agent-services:latest
+    restart: unless-stopped
+    privileged: true
+    environment:
+      CLEARML_HOST_IP: ${CLEARML_HOST_IP}
+      CLEARML_WEB_HOST: ${CLEARML_WEB_HOST:-}
+      CLEARML_API_HOST: http://apiserver:8008
+      CLEARML_FILES_HOST: ${CLEARML_FILES_HOST:-}
+      CLEARML_API_ACCESS_KEY: ${CLEARML_API_ACCESS_KEY:-}
+      CLEARML_API_SECRET_KEY: ${CLEARML_API_SECRET_KEY:-}
+      CLEARML_AGENT_GIT_USER: ${CLEARML_AGENT_GIT_USER}
+      CLEARML_AGENT_GIT_PASS: ${CLEARML_AGENT_GIT_PASS}
+      CLEARML_AGENT_UPDATE_VERSION: ${CLEARML_AGENT_UPDATE_VERSION:->=0.17.0}
+      CLEARML_AGENT_DEFAULT_BASE_DOCKER: "ubuntu:20.04"
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
+      AZURE_STORAGE_ACCOUNT: ${AZURE_STORAGE_ACCOUNT:-}
+      AZURE_STORAGE_KEY: ${AZURE_STORAGE_KEY:-}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
+      CLEARML_WORKER_ID: "clearml-services"
+      CLEARML_AGENT_DOCKER_HOST_MOUNT: "/opt/clearml/agent:/root/.clearml"
+      SHUTDOWN_IF_NO_ACCESS_KEY: 1
+    volumes:
+      # DiD
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./clearml/agent:/root/.clearml
+    depends_on:
+      - apiserver
+    entrypoint: >
+      bash -c "curl --retry 10 --retry-delay 10 --retry-connrefused 'http://apiserver:8008/debug.ping' && /usr/agent/entrypoint.sh"
 
 networks:
   backend:
