@@ -162,42 +162,24 @@ services:
     volumes:
       - ./clearml/logs:/var/log/clearml
 
-  agent-services:
+  minio:
+    image: minio/minio:RELEASE.2022-11-17T23-20-09Z
+    command: server --console-address ":9001" /data
     networks:
       - backend
-    container_name: clearml-agent-services
-    # TODO - check if can be changed to certain version
-    image: allegroai/clearml-agent-services:latest
-    restart: unless-stopped
-    privileged: true
+    ports:
+      - 9000:9000
+      - 9001:9001
     environment:
-      CLEARML_HOST_IP: ${CLEARML_HOST_IP}
-      CLEARML_WEB_HOST: ${CLEARML_WEB_HOST:-}
-      CLEARML_API_HOST: http://apiserver:8008
-      CLEARML_FILES_HOST: ${CLEARML_FILES_HOST:-}
-      CLEARML_API_ACCESS_KEY: ${CLEARML_API_ACCESS_KEY:-}
-      CLEARML_API_SECRET_KEY: ${CLEARML_API_SECRET_KEY:-}
-      CLEARML_AGENT_GIT_USER: ${CLEARML_AGENT_GIT_USER}
-      CLEARML_AGENT_GIT_PASS: ${CLEARML_AGENT_GIT_PASS}
-      CLEARML_AGENT_UPDATE_VERSION: ${CLEARML_AGENT_UPDATE_VERSION:->=0.17.0}
-      CLEARML_AGENT_DEFAULT_BASE_DOCKER: "ubuntu:20.04"
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
-      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
-      AZURE_STORAGE_ACCOUNT: ${AZURE_STORAGE_ACCOUNT:-}
-      AZURE_STORAGE_KEY: ${AZURE_STORAGE_KEY:-}
-      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
-      CLEARML_WORKER_ID: "clearml-services"
-      CLEARML_AGENT_DOCKER_HOST_MOUNT: "/opt/clearml/agent:/root/.clearml"
-      SHUTDOWN_IF_NO_ACCESS_KEY: 1
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
     volumes:
-      # DiD
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./clearml/agent:/root/.clearml
-    depends_on:
-      - apiserver
-    entrypoint: >
-      bash -c "curl --retry 10 --retry-delay 10 --retry-connrefused 'http://apiserver:8008/debug.ping' && /usr/agent/entrypoint.sh"
+      - ./clearml/minio:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
 
 networks:
   backend:
