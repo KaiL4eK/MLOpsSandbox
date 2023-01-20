@@ -1,4 +1,4 @@
 /clearml
-clearml.conf
+/config/*.conf
 /venv*
 .env

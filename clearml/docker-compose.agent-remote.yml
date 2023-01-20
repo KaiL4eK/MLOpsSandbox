@@ -1,0 +1,33 @@
+# From https://github.com/allegroai/clearml-server/blob/1.5.0/docker/docker-compose.yml
+version: "3.6"
+
+services:
+  agent:
+    # TODO - check if can be changed to certain version
+    image: clearml-agent
+    build:
+      context: docker
+    restart: unless-stopped
+    privileged: true
+    environment:
+      CLEARML_HOST_IP: ${CLEARML_HOST_IP}
+      CLEARML_WEB_HOST: ${CLEARML_WEB_HOST:-http://webserver}
+      CLEARML_API_HOST: ${CLEARML_API_HOST:-http://apiserver:8008}
+      CLEARML_FILES_HOST: ${CLEARML_FILES_HOST:-http://fileserver:8081}
+      CLEARML_API_ACCESS_KEY: ${CLEARML_API_ACCESS_KEY:-}
+      CLEARML_API_SECRET_KEY: ${CLEARML_API_SECRET_KEY:-}
+      CLEARML_AGENT_GIT_USER: ${CLEARML_AGENT_GIT_USER}
+      CLEARML_AGENT_GIT_PASS: ${CLEARML_AGENT_GIT_PASS}
+      CLEARML_AGENT_UPDATE_VERSION: ${CLEARML_AGENT_UPDATE_VERSION:->=0.17.0}
+      CLEARML_AGENT_DEFAULT_BASE_DOCKER: "ubuntu:20.04"
+      CLEARML_WORKER_ID: "clearml-remote-alex"
+      CLEARML_AGENT_DOCKER_HOST_MOUNT: "${CLEARML_AGENT_MOUNT_DIR}:/root/.clearml"
+      SHUTDOWN_IF_NO_ACCESS_KEY: 1
+      CLEARML_AGENT_EXTRA_ARGS: "--queue ${CLEARML_AGENT_QUEUE} --create-queue"
+    volumes:
+      # DiD
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ${CLEARML_AGENT_MOUNT_DIR}:/root/.clearml
+      - ./config/clearml-agent.conf:/root/clearml.conf:ro
+    entrypoint: >
+      bash -c "curl --retry 10 --retry-delay 10 --retry-connrefused '${CLEARML_API_HOST}/debug.ping' && /usr/agent/entrypoint.sh"

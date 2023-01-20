@@ -1,0 +1,17 @@
+version: "3.8"
+
+x-restart-policy: &restart-policy unless-stopped
+x-logging-policy:
+  &logging-policy
+  options:
+    max-file: "5"
+    max-size: "20m"
+
+services:
+  swagger-editor:
+    image: swaggerapi/swagger-editor:v4.6.0
+    restart: *restart-policy
+    logging: *logging-policy
+    ports:
+      - "8091:8080"
+    

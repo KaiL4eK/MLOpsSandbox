@@ -1,0 +1,29 @@
+api { 
+    web_server: http://10.8.112.9:8080
+    api_server: http://10.8.112.9:8008
+    files_server: http://10.8.112.9:8081
+    credentials {
+        "access_key" = ""
+        "secret_key"  = ""
+    }
+}
+
+sdk {
+    aws {
+        s3 {
+            credentials: [
+                {
+                    host: "10.8.112.9:9000"
+                    key: ""
+                    secret: ""
+                    multipart: false
+                    secure: false
+                }
+            ]
+        }
+        boto3 {
+            pool_connections: 512
+            max_multipart_concurrency: 16
+        }
+    }
+}
