@@ -7,14 +7,14 @@ services:
       - backend
     container_name: clearml-agent-services
     # TODO - check if can be changed to certain version
-    image: allegroai/clearml-agent-services:latest
+    image: allegroai/clearml-agent-services:services-1.1.1-44
     restart: unless-stopped
     privileged: true
     environment:
       CLEARML_HOST_IP: ${CLEARML_HOST_IP}
-      CLEARML_WEB_HOST: ${CLEARML_WEB_HOST:-}
-      CLEARML_API_HOST: ${CLEARML_API_HOST}
-      CLEARML_FILES_HOST: ${CLEARML_FILES_HOST:-}
+      CLEARML_WEB_HOST: ${CLEARML_WEB_HOST:-http://webserver}
+      CLEARML_API_HOST: ${CLEARML_API_HOST:-http://apiserver:8008}
+      CLEARML_FILES_HOST: ${CLEARML_FILES_HOST:-http://fileserver:8081}
       CLEARML_API_ACCESS_KEY: ${CLEARML_API_ACCESS_KEY:-}
       CLEARML_API_SECRET_KEY: ${CLEARML_API_SECRET_KEY:-}
       CLEARML_AGENT_GIT_USER: ${CLEARML_AGENT_GIT_USER}
