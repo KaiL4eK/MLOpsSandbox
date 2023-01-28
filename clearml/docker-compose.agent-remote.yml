@@ -3,7 +3,7 @@ version: "3.6"
 
 services:
   agent:
-    image: allegroai/clearml-agent-services:services-1.1.1-44
+    image: clearml-agent
     build:
       context: docker
     restart: unless-stopped
