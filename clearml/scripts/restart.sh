@@ -18,4 +18,4 @@ echo "Compose project name: $COMPOSE_PROJECT_NAME"
 mkdir -p clearml/elastic/{data,logs}
 
 docker-compose stop && \
-docker-compose -f docker-compose.yml -f docker-compose.agent.yml up $DOCKER_OPTS
+docker-compose up $DOCKER_OPTS
