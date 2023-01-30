@@ -25,7 +25,7 @@ services:
       CLEARML_AGENT_EXTRA_ARGS: "--queue ${CLEARML_AGENT_QUEUE} --create-queue"
     volumes:
       # DiD
-      - /var/run/docker.sock:/var/run/docker.sock
+      # - /var/run/docker.sock:/var/run/docker.sock
       - ${CLEARML_AGENT_MOUNT_DIR}:/root/.clearml
       - ./config/clearml-agent.conf:/root/clearml.conf:ro
     entrypoint: >

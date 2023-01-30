@@ -6,6 +6,8 @@ authors = ["AlexDev <alexey4dev@gmail.com>"]
 readme = "README.md"
 packages = [{include = "sample_project"}]
 
+
+
 [tool.poetry.dependencies]
 python = "~=3.8.0"
 python-dotenv = "^0.21.1"

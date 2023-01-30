@@ -16,4 +16,5 @@ elif [ ! -z "$LOWER_CLEARML_AGENT_UPDATE_VERSION" ] ; then
     python3 -m pip install clearml-agent$LOWER_CLEARML_AGENT_UPDATE_VERSION ;
 fi
 
-python3 -m clearml_agent daemon --docker "${CLEARML_AGENT_DEFAULT_BASE_DOCKER:-$TRAINS_AGENT_DEFAULT_BASE_DOCKER}" --force-current-version ${CLEARML_AGENT_EXTRA_ARGS:-$TRAINS_AGENT_EXTRA_ARGS}
+# python3 -m clearml_agent daemon --docker "${CLEARML_AGENT_DEFAULT_BASE_DOCKER:-$TRAINS_AGENT_DEFAULT_BASE_DOCKER}" --force-current-version ${CLEARML_AGENT_EXTRA_ARGS:-$TRAINS_AGENT_EXTRA_ARGS}
+python3 -m clearml_agent daemon --force-current-version ${CLEARML_AGENT_EXTRA_ARGS:-$TRAINS_AGENT_EXTRA_ARGS}
