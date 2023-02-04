@@ -12,9 +12,8 @@ RUN curl -sSL https://get.docker.com/ | sh
 RUN python3 -m pip install -U pip
 RUN python3 -m pip install clearml-agent
 RUN python3 -m pip install -U "cryptography>=2.9"
-RUN python3 -m pip install poetry
 
-COPY . /usr/agent
+COPY entrypoint.sh ./
 
 ENV CLEARML_DOCKER_SKIP_GPUS_FLAG=1
 
