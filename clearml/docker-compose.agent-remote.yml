@@ -18,15 +18,15 @@ services:
       CLEARML_AGENT_GIT_USER: ${CLEARML_AGENT_GIT_USER}
       CLEARML_AGENT_GIT_PASS: ${CLEARML_AGENT_GIT_PASS}
       CLEARML_AGENT_UPDATE_VERSION: ${CLEARML_AGENT_UPDATE_VERSION:-~=1.5.1}
-      CLEARML_AGENT_DEFAULT_BASE_DOCKER: "ubuntu:20.04"
-      # CLEARML_AGENT_DEFAULT_BASE_DOCKER: "clearml-agent-executor:3.8-1.3"
+      # CLEARML_AGENT_DEFAULT_BASE_DOCKER: "ubuntu:20.04"
+      CLEARML_AGENT_DEFAULT_BASE_DOCKER: "clearml-agent-executor:3.8-1.3"
       CLEARML_WORKER_ID: "clearml-remote"
       CLEARML_AGENT_DOCKER_HOST_MOUNT: "${CLEARML_AGENT_MOUNT_DIR}:/root/.clearml"
       SHUTDOWN_IF_NO_ACCESS_KEY: 1
       CLEARML_AGENT_EXTRA_ARGS: "--queue ${CLEARML_AGENT_QUEUE} --create-queue"
     volumes:
-      # DiD
-      - /var/run/docker.sock:/var/run/docker.sock
+      # DiD - disabled
+      # - /var/run/docker.sock:/var/run/docker.sock
       - ${CLEARML_AGENT_MOUNT_DIR}:/root/.clearml
       - ./config/clearml-agent.conf:/root/clearml.conf:ro
     entrypoint: >
