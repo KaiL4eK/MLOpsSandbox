@@ -1,5 +1,3 @@
-# https://github.com/nextcloud/docker
-# https://hub.docker.com/_/nextcloud/tags
 version: "3.8"
 
 x-restart-policy: &restart-policy unless-stopped
@@ -9,22 +7,7 @@ x-logging-policy:
     max-file: "5"
     max-size: "20m"
 
-# services
 services:
-  nextcloud:
-    image: nextcloud:${NEXTCLOUD_TAG}
-    restart: *restart-policy
-    logging: *logging-policy
-    ports:
-      - 8070:80
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_HOST: postgres
-    volumes:
-      - ./${COMPOSE_ROOT_DIR}/nextcloud:/var/www/html
-
   postgres:
     image: postgres:${POSTGRES_TAG}
     restart: *restart-policy
