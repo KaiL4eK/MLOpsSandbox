@@ -12,6 +12,8 @@ services:
     image: postgres:${POSTGRES_TAG}
     restart: *restart-policy
     logging: *logging-policy
+    ports:
+      - 5432:5432
     environment:
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: ${POSTGRES_DB}
