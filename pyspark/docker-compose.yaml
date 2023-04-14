@@ -7,6 +7,21 @@ x-logging-policy:
     max-file: "5"
     max-size: "20m"
 
+x-default-worker-service: &default-worker-service
+  image: docker.io/bitnami/spark:${SPARK_TAG}
+  restart: *restart-policy
+  logging: *logging-policy
+  environment:
+    - SPARK_MODE=worker
+    - SPARK_MASTER_URL=spark://spark:7077
+    - SPARK_WORKER_MEMORY=${SPARK_WORKER_MEMORY}
+    - SPARK_WORKER_CORES=${SPARK_WORKER_CORES}
+    - SPARK_RPC_AUTHENTICATION_ENABLED=no
+    - SPARK_RPC_ENCRYPTION_ENABLED=no
+    - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+    - SPARK_SSL_ENABLED=no
+    - SPARK_USER=spark
+
 services:
   spark:
     image: docker.io/bitnami/spark:${SPARK_TAG}
@@ -21,19 +36,19 @@ services:
       - SPARK_USER=spark
     ports:
       - 8080:8080
+      - 7077:7077
 
-  spark-worker:
-    image: docker.io/bitnami/spark:${SPARK_TAG}
-    restart: *restart-policy
-    logging: *logging-policy
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark:7077
-      - SPARK_WORKER_MEMORY=${SPARK_WORKER_MEMORY}
-      - SPARK_WORKER_CORES=${SPARK_WORKER_CORES}
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-      
+  spark-worker-1:
+    <<: *default-worker-service
+    ports:
+      - 8081:8081
+
+  spark-worker-2:
+    <<: *default-worker-service
+    ports:
+      - 8082:8081
+
+  spark-worker-3:
+    <<: *default-worker-service
+    ports:
+      - 8083:8081
